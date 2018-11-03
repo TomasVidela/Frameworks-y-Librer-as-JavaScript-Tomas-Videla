@@ -216,3 +216,41 @@ function columnas(){
 	}
 	return dulcesColumnas;
 };
+///////////////////////////////////////////////////////////////////////////////
+// Corazón del juego
+// Aparecen nuevos dulces + arastre  de caramelos + puntuacion + numero de movimientos
+function dulces(){
+	$(".elemento").draggable({disabled:true});
+	$("div[class^='col']").css("justify-content","flex-start")
+	for(var j=1;j<8;j++){
+		llenadoColumnas[j-1]=$(".col-"+j).children().length;
+	}
+	if(dulceAleatorio==0){ // nuevos dulces
+		for(var j=0;j<7;j++){
+			llenadoFilas[j]=(7-llenadoColumnas[j]);}
+		limite=Math.max.apply(null,llenadoFilas);
+		puntaje=limite;
+	}
+	if(limite!=0){ //dulces Aleatorio
+		if(dulceAleatorio==1){
+			for(var j=1;j<8;j++){
+				if(puntaje>(limite-llenadoFilas[j-1])){
+					$(".col-"+j).children("img:nth-child("+(llenadoFilas[j-1])+")").remove("img");}}
+		}
+
+		for(var j=1;j<8;j++){// limite del llenado de filas mantiene en el piso las sobrantes
+			if(puntaje>(limite-llenadoFilas[j-1])){
+				numero=Math.floor(Math.random()*4)+1;
+				imagen="image/"+numero+".png";
+				$(".col-"+j).prepend("<img src="+imagen+" class='elemento'/>");
+			}
+		}
+	}
+	if(puntaje==1){ //callback puntaje y arrastre aparecer desaparecer
+		clearInterval(aparecer);
+		desaparecer=setInterval(function(){
+			despejar()
+		},50);
+	}
+	puntaje=puntaje-1;
+};
